@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-base: #0a0a0f;
+  --color-bg-surface: #111118;
+  --color-bg-surface2: #1a1a24;
+  --color-bg-surface3: #22223a;
+  --color-border: #2a2a3a;
+  --color-border-light: #3a3a50;
+  --color-text-primary: #f0f0f5;
+  --color-text-secondary: #8888aa;
+  --color-text-muted: #55556a;
+  --color-accent: #7c6dfa;
+  --color-accent-hover: #9d8ffc;
+  --color-accent-dim: rgba(124, 109, 250, 0.15);
+
+  /* Task type colors */
+  --color-somos: #c4b5fd;
+  --color-unifil: #fb923c;
+  --color-casa: #34d399;
+  --color-rawane: #f472b6;
+
+  /* Priority colors */
+  --color-priority-urgent: #ef4444;
+  --color-priority-high: #f97316;
+  --color-priority-medium: #eab308;
+  --color-priority-low: #6b7280;
+
+  /* Kanban column colors */
+  --color-col-backlog: #3b82f6;
+  --color-col-progress: #7c6dfa;
+  --color-col-waiting: #f59e0b;
+  --color-col-done: #10b981;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #0a0a0f;
+  color: #f0f0f5;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  min-height: 100svh;
+  background-color: #0a0a0f;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #111118;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a3a;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a50;
+}
+
+/* Tiptap editor styles */
+.tiptap-editor .ProseMirror {
+  outline: none;
+  min-height: 160px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #f0f0f5;
+}
+
+.tiptap-editor .ProseMirror p {
+  margin: 0 0 8px;
+}
+
+.tiptap-editor .ProseMirror p:last-child {
+  margin-bottom: 0;
+}
+
+.tiptap-editor .ProseMirror strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+.tiptap-editor .ProseMirror ul,
+.tiptap-editor .ProseMirror ol {
+  padding-left: 20px;
+  margin: 4px 0 8px;
+}
+
+.tiptap-editor .ProseMirror li {
+  margin-bottom: 4px;
+}
+
+.tiptap-editor .ProseMirror a {
+  color: #7c6dfa;
+  text-decoration: underline;
+}
+
+.tiptap-editor .ProseMirror.ProseMirror-focused {
+  outline: none;
+}
+
+.tiptap-editor .ProseMirror p.is-editor-empty:first-child::before {
+  color: #55556a;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Kanban drag ghost */
+.sortable-ghost {
+  opacity: 0.3;
+  border: 2px dashed #7c6dfa !important;
+}
+
+.sortable-chosen {
+  opacity: 0.8;
+}
+
+/* Smooth page transitions */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* Input date native fixes */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.7);
+  cursor: pointer;
+}
