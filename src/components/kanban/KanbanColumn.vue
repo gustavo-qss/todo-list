@@ -44,11 +44,12 @@ const emit = defineEmits<{
     >
       <VueDraggable
         v-model="tasks"
-        :group="{ name: 'tasks', pull: true, put: true }"
+        :group="{ name: 'tasks', pull: !mobile, put: !mobile }"
         item-key="id"
         :animation="200"
         ghost-class="sortable-ghost"
         chosen-class="sortable-chosen"
+        :disabled="mobile"
         class="flex flex-col gap-2 min-h-[60px]"
         @add="(evt: any) => {
           const taskId = evt.item.dataset.id
