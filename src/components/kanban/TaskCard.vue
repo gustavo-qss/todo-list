@@ -1,13 +1,22 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import dayjs from 'dayjs'
 import AppBadge from '@/components/ui/AppBadge.vue'
-import type { Task } from '@/types'
+import type { Task, KanbanColumn, KanbanStatus } from '@/types'
 import { PRIORITY_CONFIG } from '@/types'
 
-const props = defineProps<{ task: Task }>()
+const props = defineProps<{
+  task: Task
+  otherColumns?: KanbanColumn[]
+}>()
+
+const emit = defineEmits<{
+  moveTo: [taskId: string, status: KanbanStatus]
+}>()
+
 const router = useRouter()
+const showMoveMenu = ref(false)
 
 const isOverdue = computed(() => {
   if (!props.task.due_date) return false
@@ -22,17 +31,25 @@ const formattedDue = computed(() => {
 const hasAttachments = computed(() =>
   (props.task.task_attachments?.length ?? 0) > 0
 )
+
+function navigateToTask() {
+  if (showMoveMenu.value) {
+    showMoveMenu.value = false
+    return
+  }
+  router.push(`/task/${props.task.id}`)
+}
 </script>
 
 <template>
   <div
-    class="group bg-[#111118] border border-[#2a2a3a] hover:border-[#3a3a50] rounded-xl p-3.5 cursor-pointer
+    class="group relative bg-[#111118] border border-[#2a2a3a] hover:border-[#3a3a50] rounded-xl p-3.5 cursor-pointer
            transition-all duration-200 hover:shadow-lg hover:shadow-black/30 active:scale-[0.98]
            hover:-translate-y-0.5"
-    @click="router.push(`/task/${task.id}`)"
+    @click="navigateToTask"
   >
-    <!-- Title -->
-    <p class="text-sm font-medium text-[#f0f0f5] leading-snug mb-2.5 line-clamp-2">
+    <!-- Title — add right padding on mobile to avoid overlap with move button -->
+    <p class="text-sm font-medium text-[#f0f0f5] leading-snug mb-2.5 line-clamp-2 pr-7 md:pr-0">
       {{ task.title }}
     </p>
 
@@ -78,6 +95,42 @@ const hasAttachments = computed(() =>
         </svg>
         {{ task.task_attachments?.length }}
       </span>
+    </div>
+
+    <!-- Move button — mobile only -->
+    <button
+      v-if="otherColumns?.length"
+      class="md:hidden absolute top-2.5 right-2.5 w-6 h-6 flex items-center justify-center
+             rounded-md text-[#55556a] hover:text-[#f0f0f5] hover:bg-[#2a2a3a]
+             transition-colors z-10"
+      @click.stop="showMoveMenu = !showMoveMenu"
+      aria-label="Mover tarefa"
+    >
+      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+      </svg>
+    </button>
+
+    <!-- Move dropdown — mobile only -->
+    <div
+      v-if="showMoveMenu && otherColumns?.length"
+      class="md:hidden absolute top-9 right-2 z-50 bg-[#1a1a24] border border-[#2a2a3a]
+             rounded-xl p-1.5 shadow-xl shadow-black/50 min-w-[160px]"
+      @click.stop
+    >
+      <p class="text-[10px] font-semibold text-[#55556a] uppercase tracking-wider px-2 py-1">
+        Mover para
+      </p>
+      <button
+        v-for="col in otherColumns"
+        :key="col.id"
+        class="w-full flex items-center gap-2 px-2 py-2 rounded-lg text-sm text-[#f0f0f5]
+               hover:bg-[#2a2a3a] transition-colors text-left"
+        @click.stop="emit('moveTo', task.id, col.id); showMoveMenu = false"
+      >
+        <span class="w-2 h-2 rounded-full flex-shrink-0" :style="{ backgroundColor: col.color }" />
+        {{ col.label }}
+      </button>
     </div>
   </div>
 </template>

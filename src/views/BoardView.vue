@@ -52,7 +52,7 @@ onMounted(() => {
     </header>
 
     <!-- Board -->
-    <div class="flex-1 p-4">
+    <div class="flex-1 p-4 flex flex-col">
       <KanbanBoard />
     </div>
   </div>
